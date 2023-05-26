@@ -30,6 +30,10 @@ document.body.addEventListener('keydown', (event) => {
         gameRound('✋');
     } else if (event.key === 's') {
         gameRound('✌️');
+    } else if (event.key === 'a') {
+        autoPlay();
+    } else if (event.key === 'Backspace') {
+        resetScore();
     }
 })
 
@@ -107,17 +111,31 @@ function gameRound(youPicked) {
 }
 
 function resetScore() {
-    document.querySelector('.score').innerHTML = `Wins: 0 - Losses: 0 - Ties: 0`;
-    score.wins = 0;
-    score.losses = 0;
-    score.ties = 0;
-    localStorage.removeItem('score');
+    document.querySelector(".confirmation")
+        .innerHTML = "Are you sure you want to reset the score? <button class='yes'>Yes</button> <button class='no'>No</button>";
+    
+    document.querySelector('.yes')
+        .addEventListener('click', () => {
+            document.querySelector('.score').innerHTML = `Wins: 0 - Losses: 0 - Ties: 0`;
+            score.wins = 0;
+            score.losses = 0;
+            score.ties = 0;
+            localStorage.removeItem('score');
+            document.querySelector(".confirmation").innerHTML = "";
+        });
+
+    document.querySelector('.no')
+        .addEventListener('click', () => {
+            document.querySelector(".confirmation").innerHTML = "";
+        });
 }
 
 let isAutoPlaying = false;
 let intervalId;
 
 function autoPlay() {
+    document.querySelector(".autoPlay").innerHTML = "Stop Playing";
+
     if (!isAutoPlaying) {
         intervalId = setInterval(() => {
             youPicked = Math.ceil(Math.random() * 3);
@@ -136,6 +154,7 @@ function autoPlay() {
         isAutoPlaying = true;
         
     } else {
+        document.querySelector(".autoPlay").innerHTML = "Auto Play";
         clearInterval(intervalId);
         isAutoPlaying = false;
     }
